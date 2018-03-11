@@ -1,0 +1,19 @@
+.nav_wrapper {
+  background: #13c2c2;
+  position: absolute;
+  width: 375px;
+  bottom: 0px;
+}
+.navitem_selected {
+  background: #12b5b5;
+  border: 1px solid #12b5b5;;
+}
+.navitem_icon {
+  margin-top: 6px;
+  width: 50px;
+}
+.navitem_title {
+  margin: 4px;
+  font-size: 12px;
+  color: white;
+}

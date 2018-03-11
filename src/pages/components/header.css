@@ -1,0 +1,18 @@
+.header_area {
+  height: 40px;
+  position: relative;
+  background: #13c2c2;
+}
+.header_title {
+  line-height: 40px;
+  font-size: 16px;
+  display: inline-block;
+  color: white;
+}
+.header_avatar {
+  height: 30px;
+  display: block;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
