@@ -1,56 +1,100 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
-import { Link } from 'react-router-dom';
-import './roomList.css';
+import { Tag, Input } from 'antd';
+import {  } from 'react-router-dom';
+import './roomPage.css';
 import Frame from './components/frame';
-import two_player from '../public/two_player.png';
-import five_player from '../public/five_player.png';
 
-const chess_room = [
+const Search = Input.Search;
+
+const chess_player_list = [
   {
-    room_id: 1,
-    player_num: 1,
-    status: 'waiting',
+    player_name: "沙滩男孩",
+    wins_round: 4,
+    all_round: 7,
+    status: 'master',
   },
   {
-    room_id: 2,
-    player_num: 2,
+    player_name: "瓜皮男孩",
+    wins_round: 21,
+    all_round: 50,
     status: 'waiting',
-  },
-  {
-    room_id: 3,
-    player_num: 2,
-    status: 'playing',
   }
-]
+];
+const draw_player_list = [
+  {
+    player_name: "马里奥",
+    status: 'master',
+  },
+  {
+    player_name: "路易吉",
+    status: 'ready',
+  },
+  {
+    player_name: "皮卡丘",
+    status: 'waiting',
+  },
+  {
 
-export default class GameList extends Component {
+  },
+  {
+
+  }
+];
+const status_text_map = {
+  'master': '房主',
+  'waiting': '等待',
+  'ready': '准备',
+}
+const status_color_map = {
+  'master': '#108ee9',
+  'waiting': '#2db7f5',
+  'ready': '#87d068',
+}
+export default class RoomPage extends Component {
   // constructor(props) {
   //   super(props);
   // };
 
   render () {
-    let room_list = chess_room
-    console.log(this.props);
     const { type } = this.props;
 
-    const five_player_table = null;
-    const two_player_table = null;
-    const child = <div>
-      <div className="roomlist_wrapper">
-        {room_list.map( (i, n) => {
-          return <Link key={n.toString()} to={`/${type}/${i.room_id}`}>
-            <div className="roomlist_item">
-              <div className="roomlist_item_id">ID：{i.room_id}</div>
-              <img src={type === 'chess' ? two_player : five_player } alt="" className="roomlist_icon"/>
-              <div>房间人数：{i.player_num}/2</div>
-              <div>{i.status === 'waiting'? '等待中...' : '游戏中...' }</div>
-            </div>
-          </Link>
-        })
+    const five_player_table = <div className="player_warpper">
+      {draw_player_list.map( (i, n) => <div>
+        {i.player_name?
+          <div className="draw_player_warppar"  style={{ display: i.player_name? 'block' : 'none'}}>
+            <div className="default_avatar">{i.player_name.substring(0,1)}</div>
+            <p>{i.player_name}</p>
+            <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
+          </div>
+          :
+          <div className="draw_player_warppar"></div>
         }
+      </div>)}
+    </div>;
+    const two_player_table = <div>
+    {chess_player_list.map( (i, n) => <div>
+        {i.player_name?
+          <div  style={{ display: i.player_name? 'block' : 'none'}}>
+            <div>{i.player_name.substring(0,1)}</div>
+            <p>{i.player_name}</p>
+            <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
+          </div>
+          :
+          <div></div>
+        }
+      </div>)}
+    </div>;
+    const child = <div className="roompage">
+      <div>
+        { type === 'chess' ? two_player_table : five_player_table}
       </div>
-      <Button className="createroom_btn" type="primary">创建房间</Button>
+
+      <div className="chatroom_wrapper">
+        <div className="chatroom_content"></div>
+        <div>
+          <Search placeholder="单击此处编辑聊天内容" enterButton="发送" size="default" />
+        </div>
+      </div>
     </div>
     return (
       <Frame header_title={type === 'chess' ? "五子棋" : '你画我猜'}

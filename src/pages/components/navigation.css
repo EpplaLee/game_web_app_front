@@ -3,6 +3,7 @@
   position: absolute;
   width: 375px;
   bottom: 0px;
+  height: 12%;
 }
 .navitem_selected {
   background: #12b5b5;

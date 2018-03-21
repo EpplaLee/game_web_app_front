@@ -36,7 +36,7 @@ export default class GameList extends Component {
     const child = <div>
       <div className="roomlist_wrapper">
         {room_list.map( (i, n) => {
-          return <Link key={n.toString()} to={`/${type}/${i.room_id}`}>
+          return <Link key={n.toString()} to={`/roompage/${type}/${i.room_id}`}>
             <div className="roomlist_item">
               <div className="roomlist_item_id">ID：{i.room_id}</div>
               <img src={type === 'chess' ? two_player : five_player } alt="" className="roomlist_icon"/>
