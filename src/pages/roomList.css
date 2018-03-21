@@ -1,0 +1,43 @@
+.roomlist_wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+.roomlist_item {
+  color: #666666;
+  margin-top: 30px;
+  margin-left: 45px;
+  width: 120px;
+  height: 120px;
+  border: solid 1px #e6d8d8;
+  border-radius: 6px;
+}
+/* .roomlist_item:nth-child(odd) {
+  margin-right: 45px;
+  margin-left: 22.5px;
+}
+.roomlist_item:nth-child(even) {
+  margin-right: 22.5px;
+  margin-left: 45px;
+} */
+.roomlist_item_id {
+  text-align: left;
+  font-size: 12px;
+  margin-left: 4px;
+  margin-top: 2px;
+}
+.roomlist_icon {
+  width: 50px;
+}
+.createroom_btn {
+  position: absolute;
+  bottom: 110px;
+  left: 112px;
+  color: #fff;
+  background-color: #13c2c2;
+  border-color: #13c2c2;
+  margin-top: 30px;
+  width: 150px;
+  height: 40px;
+  font-size: 16px;
+  border-radius: 6px;
+}

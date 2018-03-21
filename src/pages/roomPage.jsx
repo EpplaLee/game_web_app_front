@@ -33,6 +33,9 @@ export default class GameList extends Component {
     let room_list = chess_room
     console.log(this.props);
     const { type } = this.props;
+
+    const five_player_table = null;
+    const two_player_table = null;
     const child = <div>
       <div className="roomlist_wrapper">
         {room_list.map( (i, n) => {
