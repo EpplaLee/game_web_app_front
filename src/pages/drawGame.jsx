@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import Frame from './components/frame';
+
 import './drawGame.css';
-import './mainPage.css';
 
 const windowToCanvas = (canvas, x, y) => {
   return {
@@ -9,8 +10,24 @@ const windowToCanvas = (canvas, x, y) => {
   }
 }
 
+const palette = [];
+
 export default class DrawGame extends Component  {
+  constructor(props) {
+    super(props);
+    this.state = {
+      timeleft: 60,
+    }
+  }
   componentDidMount() {
+    let { timeleft } = this.state;
+    setInterval( () => {
+      if(timeleft > 0) {
+        timeleft = timeleft - 1;
+        this.setState({ timeleft: timeleft });
+      }
+    }, 1000)
+
     const canvas_ele = this.refs.draw_canvas;
     const context = canvas_ele.getContext('2d');
     let isDrawing = false;
@@ -54,8 +71,17 @@ export default class DrawGame extends Component  {
     })
   }
   render() {
-    return <div>
-      <canvas className="draw_canvas" ref="draw_canvas" width='400' height='300'></canvas>
+    let { timeleft } = this.state; 
+    const child =  <div>
+      <div className="info_wrapper">
+        <span>提示： 水果（三个字）</span>
+        <span>剩余时间: {timeleft}s</span>
+      </div>
+      <canvas className="draw_canvas" ref="draw_canvas" width='372' height='300'></canvas>
+      <div className="colorpicker_wrapper">
+
+      </div>
     </div>
+    return <Frame header_title="你画我猜" child={child} />
   }
 }

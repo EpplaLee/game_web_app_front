@@ -29,6 +29,48 @@
   margin-top: 4px;
   cursor: default;
 }
+.chess_player_name {
+  display: inline;
+  font-size: 14px;
+  line-height: 22px;
+}
+.chess_player_warppar {
+  width: 170px;
+  height: 80px;
+  font-size: 12px;
+  border: solid 1px #e6d8d8;
+  margin: 5px;
+  margin-top: 25px;
+  padding-top: 3px;
+  border-radius: 4px;
+  display: flex;
+}
+.chess_avatar {
+  margin-left: 6px;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+  font-size: 32px;
+  border-radius: 6px;
+}
+.chess_player_info_wrapper {
+  margin-right: 6px;
+}
+.chess_player_name_wrapper {
+  margin-top: 5px;
+}
+.custom_status_tag {
+  display: inline-block;
+  margin-left: 4px;
+  line-height: 18px;
+  background: #2db7f5;
+  color: white;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.chess_player_wins {
+  margin-top: 5px;
+}
 .chatroom_wrapper {
   width: 100%;
   height: 220px;

@@ -71,16 +71,22 @@ export default class RoomPage extends Component {
         }
       </div>)}
     </div>;
-    const two_player_table = <div>
+    const two_player_table = <div className="player_warpper">
     {chess_player_list.map( (i, n) => <div>
         {i.player_name?
-          <div  style={{ display: i.player_name? 'block' : 'none'}}>
-            <div>{i.player_name.substring(0,1)}</div>
-            <p>{i.player_name}</p>
-            <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
+          <div className="chess_player_warppar">
+            <div className="default_avatar chess_avatar">{i.player_name.substring(0,1)}</div>
+            <div className="chess_player_info_wrapper">
+              <div className="chess_player_name_wrapper">
+                <p className="chess_player_name">{i.player_name}</p>
+                <div className="custom_status_tag">{status_text_map[i.status]}</div>
+              </div>
+              <div className="chess_player_wins">胜场:{i.wins_round}</div>
+              <div>总场数:{i.all_round}</div>
+            </div>
           </div>
           :
-          <div></div>
+          <div className="chess_player_warppar"></div>
         }
       </div>)}
     </div>;

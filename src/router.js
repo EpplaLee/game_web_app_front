@@ -4,7 +4,8 @@ import MainPage from './pages/mainPage';
 import RoomList from './pages/roomList';
 import RoomPage from './pages/roomPage';
 import userInfo from './pages/userInfo';
-import DrawGame from './pages/drawGame'
+import DrawGame from './pages/drawGame';
+import ChessGame from './pages/chessGame';
 const RouterConfig = () => (
   <Router>
     <div>
@@ -13,6 +14,7 @@ const RouterConfig = () => (
       <Route  path="/roompage/:type" component={roompage} />
       <Route path="/info" component={userInfo} />
       <Route path="/draw" component={DrawGame} />
+      <Route path="/chess" component={ChessGame} />
     </div>
   </Router>
 );
