@@ -4,5 +4,14 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import RootStore from './store/root'
+import { Provider } from 'mobx-react';
+
+
+const stores = { RootStore };
+
+ReactDOM.render(<Provider {...stores}>
+  <App />
+</Provider>
+, document.getElementById('root'));
 registerServiceWorker();

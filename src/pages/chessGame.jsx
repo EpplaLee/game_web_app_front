@@ -1,20 +1,36 @@
 import React, { Component } from 'react';
+import { Row, Col } from 'antd';
 import Frame from './components/frame';
 import white_piece from '../public/pawn_white.png';
 import black_piece from '../public/pawn_black.png';
 
 import './drawGame.css';
+import './roomPage.css';
 
 const img_white_piece = new Image();
 img_white_piece.src = white_piece;
 const img_black_piece = new Image();
 img_black_piece.src = black_piece;
 
-const windowToCanvas = (canvas, x, y) => {
-  return {
-      x: x - canvas.offsetLeft,
-      y: y - canvas.offsetTop,
+const chess_player_list = [
+  {
+    player_name: "沙滩男孩",
+    wins_round: 4,
+    all_round: 7,
+    status: 'master',
+  },
+  {
+    player_name: "瓜皮男孩",
+    wins_round: 21,
+    all_round: 50,
+    status: 'waiting',
   }
+];
+
+const status_text_map = {
+  'master': '房主',
+  'waiting': '等待',
+  'ready': '准备',
 }
 
 const drawChessBoard = (context) => {
@@ -85,11 +101,36 @@ export default class ChessGame extends Component  {
   }
   render() {
     let { timeleft } = this.state; 
+    const two_player_table = <div className="player_warpper">
+    {chess_player_list.map( (i, n) => <div>
+        {i.player_name?
+          <div className="chess_player_warppar">
+            <div className="default_avatar chess_avatar">{i.player_name.substring(0,1)}</div>
+            <div className="chess_player_info_wrapper">
+              <div className="chess_player_name_wrapper">
+                <p className="chess_player_name">{i.player_name}</p>
+                <div className="custom_status_tag">{status_text_map[i.status]}</div>
+              </div>
+              <div className="chess_player_wins">胜场:{i.wins_round}</div>
+              <div>总场数:{i.all_round}</div>
+            </div>
+          </div>
+          :
+          <div className="chess_player_warppar"></div>
+        }
+        <Row>
+              <Col>执子:</Col>
+              <Col><img src={ n === 0? white_piece : black_piece} alt=""/></Col>
+            </Row>
+            <Row>
+              <Col>局时: 02:30</Col>
+              <Col>步时: 00:08</Col>
+            </Row>
+      </div>)}
+    </div>;
     const child =  <div>
       <canvas className="draw_canvas" ref="draw_canvas" width='372' height='372'></canvas>
-      <div className="colorpicker_wrapper">
-
-      </div>
+      {two_player_table}
     </div>
     return <Frame header_title="五子棋" child={child} />
   }

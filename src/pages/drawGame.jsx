@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Tag } from 'antd';
 import Frame from './components/frame';
 
 import './drawGame.css';
+import './roomPage.css';
 
 const windowToCanvas = (canvas, x, y) => {
   return {
@@ -10,7 +12,32 @@ const windowToCanvas = (canvas, x, y) => {
   }
 }
 
-const palette = [];
+const palette = ["#ff4d4f", "#faad14", "#52c41a", "#40a9ff", "#b739ef", "#333333"];
+
+const draw_player_list = [
+  {
+    player_name: "马里奥",
+    status: 'master',
+  },
+  {
+    player_name: "路易吉",
+    status: 'ready',
+  },
+  {
+    player_name: "皮卡丘",
+    status: 'waiting',
+  }
+];
+const status_text_map = {
+  'master': '房主',
+  'waiting': '等待',
+  'ready': '准备',
+}
+const status_color_map = {
+  'master': '#108ee9',
+  'waiting': '#2db7f5',
+  'ready': '#87d068',
+}
 
 export default class DrawGame extends Component  {
   constructor(props) {
@@ -79,8 +106,29 @@ export default class DrawGame extends Component  {
       </div>
       <canvas className="draw_canvas" ref="draw_canvas" width='372' height='300'></canvas>
       <div className="colorpicker_wrapper">
-
+      {palette.map( (i, n) => {
+        return <div style={{ background: {i} }} className="palette_item"></div>
+      })
+      }
       </div>
+      <div className="linepicker_wrapper">
+        <div className="line_item"><div></div></div>
+        <div className="line_item"><div></div></div>
+        <div className="line_item"><div></div></div>
+      </div>
+      <div className="player_warpper">
+      {draw_player_list.map( (i, n) => <div>
+        {i.player_name?
+          <div className="draw_player_warppar">
+            <div className="default_avatar">{i.player_name.substring(0,1)}</div>
+            <p>{i.player_name}</p>
+            <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
+          </div>
+          :
+          <div className="draw_player_warppar"></div>
+        }
+      </div>)}
+    </div>
     </div>
     return <Frame header_title="你画我猜" child={child} />
   }
