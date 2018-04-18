@@ -21,7 +21,7 @@ export default class Navigation extends Component {
             </Link>
           </Col>
           <Col span={12}>
-            <Link to='/info'>
+            <Link to='/chatroom'>
               <div className="navitem_wrapper">
                 <img className="navitem_icon" src={personal_info} alt=""/>
                 <p className="navitem_title">公共聊天</p>

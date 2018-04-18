@@ -6,6 +6,7 @@ import RoomPage from './pages/roomPage';
 import userInfo from './pages/userInfo';
 import DrawGame from './pages/drawGame';
 import ChessGame from './pages/chessGame';
+import ChatRoom from './pages/chatRoom';
 const RouterConfig = () => (
   <Router>
     <div>
@@ -15,6 +16,7 @@ const RouterConfig = () => (
       <Route path="/info" component={userInfo} />
       <Route path="/draw" component={DrawGame} />
       <Route path="/chess" component={ChessGame} />
+      <Route path="/chatroom" component={ChatRoom} />
     </div>
   </Router>
 );
