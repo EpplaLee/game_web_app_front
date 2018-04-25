@@ -16,7 +16,7 @@ export default class ChatRoom extends Component {
     this.state = {
       chat_array: [],
     }
-  }
+  };
   componentDidMount() {
     this.chat_ws.onmessage = (evt) => {
       let chat_array = this.state.chat_array.slice();

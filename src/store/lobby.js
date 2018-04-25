@@ -53,6 +53,32 @@ class Lobby {
       }
     })
   }
+  @action createRoom = (history, type, player) => {
+    this.root_store.axios.post('/room/create', qs.stringify({
+      type,
+      player,
+    })).then( res => {
+      if(res.data.err) {
+        message.error(res.data.err)
+      } else {
+        this.chess_rooms = res.data.chess_rooms
+        this.draw_rooms = res.data.draw_rooms
+        history.push(`/roompage/${type}/${res.data.room_num}`)
+      }
+    })
+  }
+  @action enterRoom = (history, type, player) => {
+    this.root_store.axios.post('/room/enter', qs.stringify({
+      type,
+      player,
+    })).then( res => {
+      if(res.data.err) {
+        message.error(res.data.err)
+      } else {
+        history.push(`/roompage/${type}/${res.data.room_num}`)
+      }
+    })
+  }
 }
 
 export default Lobby;

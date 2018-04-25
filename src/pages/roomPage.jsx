@@ -3,6 +3,10 @@ import { Tag, Input } from 'antd';
 import {  } from 'react-router-dom';
 import './roomPage.css';
 import Frame from './components/frame';
+import { observer, inject } from 'mobx-react';
+import qs from 'qs';
+
+import { api } from '../utils/constants.js'
 
 const Search = Input.Search;
 
@@ -50,10 +54,23 @@ const status_color_map = {
   'waiting': '#2db7f5',
   'ready': '#87d068',
 }
+@inject('RootStore') @observer
 export default class RoomPage extends Component {
-  // constructor(props) {
-  //   super(props);
-  // };
+  constructor(props) {
+    super(props);
+    this.state = {
+      player: {
+        nickname: this.props.RootStore.User.nickname,
+        phone_num: this.props.RootStore.User.phone_num,
+      }
+    }
+    this.room_ws = new WebSocket(`ws://${api}:5000/ws/${this.props.type}room`)
+    this.room_ws.send(qs.stringify({
+      // action: 0,       //0为创建房间，1为加入房间，2为游戏开始
+      type: this.props.type,
+      player: this.state.player,
+    }))
+  };
 
   render () {
     const { type } = this.props;
