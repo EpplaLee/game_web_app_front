@@ -50,8 +50,8 @@ const drawChessBoard = (context) => {
 }
 
 const laozi = (e, context, color, array, canvas) => {
-  let x = parseInt((e.clientX - 22.5) / 25);
-  let y = parseInt((e.clientY - 22.5) / 25);
+  let x = parseInt( (e.clientX - 22.5) / 25);
+  let y = parseInt( (e.clientY - 22.5) / 25);
 
   if(array[x][y] === 0) {
     drawChess(context, color, array, x, y, canvas)

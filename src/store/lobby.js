@@ -28,13 +28,9 @@ class Lobby {
     })
   }
   @action enterLobby = (type) => {
-    let player_info = {
-      phone_num: this.root_store.User.phone_num,
-      nickname: this.root_store.User.nickname,
-    }
-    this.root_store.axios.post(`/lobby/enter?type=${type}`, qs.stringify({
-      player: player_info,
-    })).then( res => {
+    let phone_num = this.root_store.User.phone_num;
+    let nickname = this.root_store.User.nickname; 
+    this.root_store.axios.get(`/lobby/enter?type=${type}&phone_num=${phone_num}&nickname=${nickname}`).then( res => {
       if(res.data.err) {
         message.error(res.data.err)
       } else {
@@ -44,9 +40,9 @@ class Lobby {
     })
   }
   @action leaveLobby = (type, player_info) => {
-    this.root_store.axios.post(`/lobby/enter?type=${type}`, qs.stringify({
-      player: player_info,
-    })).then( res => {
+    let phone_num = this.root_store.User.phone_num;
+    let nickname = this.root_store.User.nickname;
+    this.root_store.axios.get(`/lobby/enter?type=${type}&phone_num=${phone_num}&nickname=${nickname}`).then( res => {
       if(res.data.err) {
         message.error(res.data.err)
       } else {

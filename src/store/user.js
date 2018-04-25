@@ -18,7 +18,7 @@ class User {
         phone_num,
         password,
       }),
-      withCredentials: false,
+      // withCredentials: false,
     }).then( res => {
       if(res.data.err) {
         message.error(res.data.err)
@@ -40,7 +40,7 @@ class User {
         phone_num,
         password,
       }),
-      withCredentials: false,
+      // withCredentials: false,
     }).then( res => {
       if(res.data.err) {
         message.error(res.data.err)
