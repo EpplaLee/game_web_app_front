@@ -3,10 +3,11 @@ import { message } from 'antd'
 import qs from 'qs';
 
 class Lobby {
-  @observable chess_rooms = [];
-  @observable draw_rooms = [];
+  @observable chess_rooms = {};
+  @observable draw_rooms = {};
   @observable chess_players = [];
   @observable draw_players = [];
+  @observable player_list = [];
 
   constructor(root_store) {
     this.root_store = root_store;
@@ -21,8 +22,8 @@ class Lobby {
       //   this.root_store.User.phone_num = '';
       // }
       const { chess_rooms, draw_rooms, chess_players, draw_players} = res.data
-      this.chess_rooms = chess_rooms || []
-      this.draw_rooms = draw_rooms || []
+      this.chess_rooms = chess_rooms || {}
+      this.draw_rooms = draw_rooms || {}
       this.chess_players = chess_players || []
       this.draw_players = draw_players || []
     })
@@ -34,8 +35,11 @@ class Lobby {
       if(res.data.err) {
         message.error(res.data.err)
       } else {
-        this.chess_rooms = res.data.chess_rooms
-        this.draw_rooms = res.data.draw_rooms
+        if(type === 'draw') {
+          this.draw_rooms = res.data.room
+        } else if( type === 'chess' ) {
+          this.chess_rooms = res.data.room
+        }
       }
     })
   }
@@ -63,21 +67,29 @@ class Lobby {
       } else {
         this.chess_rooms = res.data.chess_rooms
         this.draw_rooms = res.data.draw_rooms
-        history.push(`/roompage/${type}/${res.data.room_num}`)
+        history.push(`/roompage/${type}?room_num=${res.data.room_num}&action=0`)
+        this.root_store.User.authority = 0
       }
     })
   }
-  @action enterRoom = (history, type, player) => {
+  @action enterRoom = (history, type, player, room_num) => {
     this.root_store.axios.post('/room/enter', qs.stringify({
       type,
-      player,
+      ...player,
+      room_num,
     })).then( res => {
       if(res.data.err) {
         message.error(res.data.err)
       } else {
-        history.push(`/roompage/${type}/${res.data.room_num}`)
+        history.push(`/roompage/${type}?room_num=${room_num}&action=0`)
+        this.chess_rooms = res.data.chess_rooms
+        this.draw_rooms = res.data.draw_rooms
+        this.root_store.User.authority = 1
       }
     })
+  }
+  @action refreshPlayer = (player_list) => {
+    this.player_list = player_list;
   }
 }
 

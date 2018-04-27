@@ -7,28 +7,18 @@ import Frame from './components/frame';
 import two_player from '../public/two_player.png';
 import five_player from '../public/five_player.png';
 
-const chess_room = [
-  {
-    room_id: 1,
-    player_num: 1,
-    status: 'waiting',
-  },
-  {
-    room_id: 2,
-    player_num: 2,
-    status: 'waiting',
-  },
-  {
-    room_id: 3,
-    player_num: 2,
-    status: 'playing',
-  }
-]
 @inject('RootStore') @observer
 class GameList extends Component {
   constructor(props) {
     super(props);
+    let room_list;
+    if(this.props.type === 'draw') {
+      room_list = this.props.RootStore.Lobby.draw_rooms
+    } else if ( this.props.type === 'chess') {
+      room_list = this.props.RootStore.Lobby.chess_rooms
+    }
     this.state = {
+      room_list,
       player: {
         nickname: this.props.RootStore.User.nickname,
         phone_num: this.props.RootStore.User.phone_num,
@@ -36,19 +26,18 @@ class GameList extends Component {
     }
   };
   render () {
-    let room_list = chess_room;
     const { type, history } = this.props;
-    const { player } = this.state 
-    const { createRoom, enterRoom } = this.props.RootStore.Lobby;
+    const { player, room_list } = this.state 
+    const { createRoom, enterRoom  } = this.props.RootStore.Lobby;
     const child = <div>
       <div className="roomlist_wrapper">
-        {room_list.map( (i, n) => {
-          return <div onClick={ () => { enterRoom(history, type, player) }} key={n.toString()} to={`/roompage/${type}/${i.room_id}`}>
+        {Object.keys(room_list).map( (i, n) => {
+          return <div onClick={ () => { enterRoom(history, type, player, i) }} key={n.toString()} to={`/roompage/${type}/${i}`}>
             <div className="roomlist_item">
-              <div className="roomlist_item_id">ID：{i.room_id}</div>
+              <div className="roomlist_item_id">ID：{i}</div>
               <img src={type === 'chess' ? two_player : five_player } alt="" className="roomlist_icon"/>
-              <div>房间人数：{i.player_num}/2</div>
-              <div>{i.status === 'waiting'? '等待中...' : '游戏中...' }</div>
+              <div>房间人数：{room_list[i].current_count}/{room_list[i].full_count}</div>
+              <div>{room_list[i].status === 0? '等待中...' : '游戏中...' }</div>
             </div>
           </div>
         })

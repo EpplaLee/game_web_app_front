@@ -6,6 +6,7 @@ class User {
   @observable islogin = false;
   @observable nickname = '';
   @observable phone_num = '';
+  @observable authority = null;
   constructor(root_store) {
     this.root_store = root_store;
   }
@@ -53,6 +54,9 @@ class User {
     }).catch( err => {
       console.log(err);
     })
+  }
+  @action clearAuthority = () => {
+    this.authority = null;
   }
 }
 

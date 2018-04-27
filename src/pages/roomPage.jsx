@@ -1,61 +1,24 @@
 import React, { Component } from 'react';
-import { Tag, Input } from 'antd';
-import {  } from 'react-router-dom';
+import { Tag, Input, Button } from 'antd';
+import { withRouter } from 'react-router-dom';
 import './roomPage.css';
 import Frame from './components/frame';
 import { observer, inject } from 'mobx-react';
-import qs from 'qs';
 
-import { api } from '../utils/constants.js'
+import { api, getQueryString } from '../utils/constants.js'
 
 const Search = Input.Search;
 
-const chess_player_list = [
-  {
-    player_name: "沙滩男孩",
-    wins_round: 4,
-    all_round: 7,
-    status: 'master',
-  },
-  {
-    player_name: "瓜皮男孩",
-    wins_round: 21,
-    all_round: 50,
-    status: 'waiting',
-  }
-];
-const draw_player_list = [
-  {
-    player_name: "马里奥",
-    status: 'master',
-  },
-  {
-    player_name: "路易吉",
-    status: 'ready',
-  },
-  {
-    player_name: "皮卡丘",
-    status: 'waiting',
-  },
-  {
-
-  },
-  {
-
-  }
-];
 const status_text_map = {
-  'master': '房主',
-  'waiting': '等待',
-  'ready': '准备',
+  0: '房主',
+  1: '等待',
 }
 const status_color_map = {
-  'master': '#108ee9',
-  'waiting': '#2db7f5',
-  'ready': '#87d068',
+  0: '#108ee9',
+  1: '#2db7f5',
 }
 @inject('RootStore') @observer
-export default class RoomPage extends Component {
+class RoomPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,23 +27,39 @@ export default class RoomPage extends Component {
         phone_num: this.props.RootStore.User.phone_num,
       }
     }
-    this.room_ws = new WebSocket(`ws://${api}:5000/ws/${this.props.type}room`)
-    this.room_ws.send(qs.stringify({
-      // action: 0,       //0为创建房间，1为加入房间，2为游戏开始
-      type: this.props.type,
-      player: this.state.player,
-    }))
+    this.room_ws = new WebSocket(`ws://${api}:5000/ws/gameroom`)
+    this.room_ws.onopen = () => {
+      this.room_ws.send(JSON.stringify({
+        action: getQueryString('action'),       //0为加入房间，1为游戏开始
+        type: this.props.type,
+        player: this.state.player,
+        room_num: getQueryString('room_num'),
+      }))
+    }
   };
+  componentDidMount() {
+    this.room_ws.onmessage = (evt) => {
+      let room_res = JSON.parse(evt.data)
+      if(room_res.action === 0) {
+        this.props.RootStore.Lobby.refreshPlayer(room_res.player_list)
+      } else if(room_res.action === 1) {
+        this.props.history.push(`/${this.props.type}?room_num=${getQueryString('room_num')}`)
+      }
+    }
+  }
+  componentWillUnmount () {
+    this.props.RootStore.User.clearAuthority()
+  }
 
   render () {
     const { type } = this.props;
-
+    const { player_list } = this.props.RootStore.Lobby
     const five_player_table = <div className="player_warpper">
-      {draw_player_list.map( (i, n) => <div>
-        {i.player_name?
-          <div className="draw_player_warppar"  style={{ display: i.player_name? 'block' : 'none'}}>
-            <div className="default_avatar">{i.player_name.substring(0,1)}</div>
-            <p>{i.player_name}</p>
+      {player_list.map( (i, n) => <div>
+        {i.nickname?
+          <div className="draw_player_warppar"  style={{ display: i.nickname? 'block' : 'none'}}>
+            <div className="default_avatar">{i.nickname.substring(0,1)}</div>
+            <p>{i.nickname}</p>
             <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
           </div>
           :
@@ -89,17 +68,17 @@ export default class RoomPage extends Component {
       </div>)}
     </div>;
     const two_player_table = <div className="player_warpper">
-    {chess_player_list.map( (i, n) => <div>
-        {i.player_name?
+    {player_list.map( (i, n) => <div>
+        {i.nickname?
           <div className="chess_player_warppar">
-            <div className="default_avatar chess_avatar">{i.player_name.substring(0,1)}</div>
+            <div className="default_avatar chess_avatar">{i.nickname.substring(0,1)}</div>
             <div className="chess_player_info_wrapper">
               <div className="chess_player_name_wrapper">
-                <p className="chess_player_name">{i.player_name}</p>
-                <div className="custom_status_tag">{status_text_map[i.status]}</div>
+                <p className="chess_player_name">{i.nickname}</p>
+                <div className="custom_status_tag">{status_text_map[i.authority]}</div>
               </div>
-              <div className="chess_player_wins">胜场:{i.wins_round}</div>
-              <div>总场数:{i.all_round}</div>
+              <div className="chess_player_wins">胜场:*</div>
+              <div>总场数:*</div>
             </div>
           </div>
           :
@@ -111,7 +90,18 @@ export default class RoomPage extends Component {
       <div>
         { type === 'chess' ? two_player_table : five_player_table}
       </div>
-
+      <Button 
+        disabled={(type === 'chess' && player_list.length === 2) || (type === 'draw' && player_list.length >= 2) }
+        onClick={ () => {
+          this.room_ws.send(JSON.stringify({
+            action: getQueryString('action'),       //0为加入房间，1为游戏开始
+            type: this.props.type,
+            player: this.state.player,
+            room_num: getQueryString('room_num'),
+          }))
+        } } 
+        className="createroom_btn" type="primary"
+      >游戏开始</Button>
       <div className="chatroom_wrapper">
         <div className="chatroom_content"></div>
         <div>
@@ -127,3 +117,4 @@ export default class RoomPage extends Component {
     )
   }
 }
+export default withRouter(RoomPage);
