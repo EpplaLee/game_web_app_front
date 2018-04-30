@@ -1,4 +1,4 @@
-const api = '192.168.0.2';
+const api = '192.168.0.2:5000';
 
 function getQueryString(key){
   var reg = new RegExp("(^|&)"+key+"=([^&]*)(&|$)");

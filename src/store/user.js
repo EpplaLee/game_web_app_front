@@ -55,6 +55,19 @@ class User {
       console.log(err);
     })
   }
+  @action checkLogin = () => {
+    this.root_store.axios.get('/login/check').then( res => {
+      if(res.data.err) {
+        this.islogin = false;
+        this.nickname = '';
+        this.phone_num = '';
+      } else {
+        this.islogin = true;
+        this.nickname = res.data.nickname;
+        this.phone_num = res.data.phone_num;
+      }
+    })
+  }
   @action clearAuthority = () => {
     this.authority = null;
   }

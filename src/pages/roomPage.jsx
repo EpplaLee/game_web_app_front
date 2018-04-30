@@ -27,7 +27,7 @@ class RoomPage extends Component {
         phone_num: this.props.RootStore.User.phone_num,
       }
     }
-    this.room_ws = new WebSocket(`ws://${api}:5000/ws/gameroom`)
+    this.room_ws = new WebSocket(`ws://${api}/ws/gameroom`)
     this.room_ws.onopen = () => {
       this.room_ws.send(JSON.stringify({
         action: getQueryString('action'),       //0为加入房间，1为游戏开始
@@ -91,7 +91,8 @@ class RoomPage extends Component {
         { type === 'chess' ? two_player_table : five_player_table}
       </div>
       <Button 
-        disabled={(type === 'chess' && player_list.length === 2) || (type === 'draw' && player_list.length >= 2) }
+      style={{ display: this.props.RootStore.User.authority === 0? 'block' : 'none'}}
+        disabled={!((type === 'chess' && player_list.length === 2) || (type === 'draw' && player_list.length >= 2)) }
         onClick={ () => {
           this.room_ws.send(JSON.stringify({
             action: getQueryString('action'),       //0为加入房间，1为游戏开始
@@ -100,7 +101,7 @@ class RoomPage extends Component {
             room_num: getQueryString('room_num'),
           }))
         } } 
-        className="createroom_btn" type="primary"
+        className="startgame_btn" type="primary"
       >游戏开始</Button>
       <div className="chatroom_wrapper">
         <div className="chatroom_content"></div>

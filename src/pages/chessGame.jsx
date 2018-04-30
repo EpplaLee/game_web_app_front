@@ -1,36 +1,23 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Modal } from 'antd';
+import { withRouter } from 'react-router-dom'
 import Frame from './components/frame';
 import white_piece from '../public/pawn_white.png';
 import black_piece from '../public/pawn_black.png';
+import { api, getQueryString } from '../utils/constants'
 
 import './drawGame.css';
 import './roomPage.css';
+
 
 const img_white_piece = new Image();
 img_white_piece.src = white_piece;
 const img_black_piece = new Image();
 img_black_piece.src = black_piece;
 
-const chess_player_list = [
-  {
-    player_name: "沙滩男孩",
-    wins_round: 4,
-    all_round: 7,
-    status: 'master',
-  },
-  {
-    player_name: "瓜皮男孩",
-    wins_round: 21,
-    all_round: 50,
-    status: 'waiting',
-  }
-];
-
 const status_text_map = {
-  'master': '房主',
-  'waiting': '等待',
-  'ready': '准备',
+  0: '房主',
+  1: '等待',
 }
 
 const drawChessBoard = (context) => {
@@ -49,60 +36,85 @@ const drawChessBoard = (context) => {
   }
 }
 
-const laozi = (e, context, color, array, canvas) => {
+const laozi = (e, context, color, array, canvas, ws) => {
   let x = parseInt( (e.clientX - 22.5) / 25);
   let y = parseInt( (e.clientY - 22.5) / 25);
 
   if(array[x][y] === 0) {
-    drawChess(context, color, array, x, y, canvas)
+    ws.send(JSON.stringify({
+      action: 1,
+      room_num: getQueryString('room_num'),
+      color,
+      x,
+      y,
+    }))
   }
 }
 
-const drawChess = (context, color, array, x, y, canvas) => {
+const drawChess = (context, color, x, y, canvas) => {
   if(color === 1) {
     context.drawImage(img_white_piece, x * 25 + 22.5 - canvas.offsetLeft , y * 25 + 17.5 - canvas.offsetTop, 25, 25);
-    array[x][y] = color;
   } else {
     context.drawImage(img_black_piece, x * 25 + 22.5 - canvas.offsetLeft, y * 25 + 17.5 - canvas.offsetTop, 25, 25);
-    array[x][y] = color;
   }
 }
-
-export default class ChessGame extends Component  {
+class ChessGame extends Component  {
   constructor(props) {
     super(props);
+    this.chess_ws = new WebSocket(`ws://${api}/ws/chess`)
+    this.chess_ws.onopen = () => {
+      this.chess_ws.send( JSON.stringify({
+        action: 0,    //0为建立连接，1为落子
+        room_num: getQueryString('room_num'),
+        phone_num: this.props.RootStore.User.phone_num,
+        nickname: this.props.RootStore.User.nickname,
+      }) )
+    }
     this.state = {
+      color: null,
+      chess_list: null,
+      is_playing: false,
     }
   }
   componentDidMount() {
     const canvas_ele = this.refs.draw_canvas;
     const context = canvas_ele.getContext('2d');
     drawChessBoard(context);
-
-    let color = 1;
-
-    let chess_data = [];
-    for(let i = 0; i < 15; i++) {
-      chess_data[i] = [];
-      for(let j =0; j < 15; j++) {
-        chess_data[i][j] = 0;
+    this.chess_ws.onmessage = (evt) => {
+      let chess_res = JSON.parse(evt.data);
+      if(chess_res.action === 0) {
+        this.setState({
+          color: chess_res.second_to_play === this.props.RootStore.User.phone_num ? 2 : 1,
+          is_playing: chess_res.second_to_play !== this.props.RootStore.User.phone_num,
+          chess_list: chess_res.chess_list,
+        })
+      } else if(chess_res.action === 1) {
+        drawChess(context, this.state.color, chess_res.x, chess_res.y, canvas_ele)
+        this.setState({
+          is_playing: chess_res.color === this.state.color,
+          chess_list: chess_res.chess_list,
+        })
+      } else if(chess_res.action === 2) {
+        drawChess(context, this.state.color, chess_res.x, chess_res.y, canvas_ele)
+        Modal.info({
+          title: `${chess_res.color === 1? '白棋' : '黑棋'}获胜`,
+          onOk() {
+            this.props.history.push('/')
+          },
+        });
       }
     }
-
     canvas_ele.onclick =  e => {
-      laozi(e, context, color, chess_data, canvas_ele);
-      if(color === 1) {
-        color = 2;
-      } else {
-        color = 1;
+      if(this.state.is_playing) {
+        laozi(e, context, this.state.color, this.state.chess_list, canvas_ele, this.chess_ws);
       }
     }
-
   }
   render() {
+    const { player_list } = this.props.RootStore.Lobby;
     let { timeleft } = this.state; 
     const two_player_table = <div className="player_warpper">
-    {chess_player_list.map( (i, n) => <div>
+    {player_list.map( (i, n) => <div>
         {i.player_name?
           <div className="chess_player_warppar">
             <div className="default_avatar chess_avatar">{i.player_name.substring(0,1)}</div>
@@ -111,8 +123,8 @@ export default class ChessGame extends Component  {
                 <p className="chess_player_name">{i.player_name}</p>
                 <div className="custom_status_tag">{status_text_map[i.status]}</div>
               </div>
-              <div className="chess_player_wins">胜场:{i.wins_round}</div>
-              <div>总场数:{i.all_round}</div>
+              <div className="chess_player_wins">胜场: *</div>
+              <div>总场数: *</div>
             </div>
           </div>
           :
@@ -135,3 +147,4 @@ export default class ChessGame extends Component  {
     return <Frame header_title="五子棋" child={child} />
   }
 }
+export default withRouter(ChessGame);

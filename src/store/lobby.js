@@ -60,7 +60,7 @@ class Lobby {
   @action createRoom = (history, type, player) => {
     this.root_store.axios.post('/room/create', qs.stringify({
       type,
-      player,
+      ...player,
     })).then( res => {
       if(res.data.err) {
         message.error(res.data.err)

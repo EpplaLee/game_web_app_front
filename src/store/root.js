@@ -5,7 +5,7 @@ import { api } from '../utils/constants';
 
 axios.defaults.timeout = 5000;
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = `http://${api}:5000/api`;
+axios.defaults.baseURL = `http://${api}/api`;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 class RootStore {

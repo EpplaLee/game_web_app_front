@@ -27,7 +27,8 @@ class GameList extends Component {
   };
   render () {
     const { type, history } = this.props;
-    const { player, room_list } = this.state 
+    const { player, room_list } = this.state
+    console.log( player, this.props.RootStore.User.nickname)
     const { createRoom, enterRoom  } = this.props.RootStore.Lobby;
     const child = <div>
       <div className="roomlist_wrapper">

@@ -16,6 +16,9 @@ export default class Header extends Component {
     nickname: '',
     error_label: '',
   }
+  componentDidMount() {
+    this.props.RootStore.User.checkLogin()
+  }
   changeFormType = (e) => {
     this.setState({
       form_type: e.target.value,
@@ -29,7 +32,7 @@ export default class Header extends Component {
   render () {
     const { header_title } = this.props
     const {
-      form_type, 
+      form_type,
       phone_num,
       password,
       confirm_psw,

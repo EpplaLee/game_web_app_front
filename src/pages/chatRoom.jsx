@@ -12,7 +12,7 @@ const Search = Input.Search;
 export default class ChatRoom extends Component {
   constructor(props) {
     super(props)
-    this.chat_ws = new WebSocket(`ws://${api}:5000/ws/chatroom`);
+    this.chat_ws = new WebSocket(`ws://${api}/ws/chatroom`);
     this.state = {
       chat_array: [],
     }
