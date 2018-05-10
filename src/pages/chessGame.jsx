@@ -17,7 +17,7 @@ img_black_piece.src = black_piece;
 
 const status_text_map = {
   0: '房主',
-  1: '等待',
+  1: '玩家',
 }
 
 const drawChessBoard = (context) => {
