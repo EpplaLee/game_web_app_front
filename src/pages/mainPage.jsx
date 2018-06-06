@@ -7,6 +7,7 @@ import './mainPage.css';
 
 import pallete_icon from '../public/pallete_icon.png';
 import queen_icon from '../public/queen_icon.png';
+import tetris_icon from '../public/tetris.png'
 
 @inject('RootStore') @observer
 export default class MainPage extends Component{
@@ -24,16 +25,24 @@ export default class MainPage extends Component{
         type: 'draw',
         icon: pallete_icon,
         link: '/roomlist/draw',
-        room_num: draw_rooms.length,
-        player_num: draw_players.length,
+        room_num: 3 || draw_rooms.length,
+        player_num: 8 || draw_players.length,
       },
       {
         name: '五子棋',
         icon: queen_icon,
         type: 'chess',
         link: '/roomlist/chess',
-        room_num: chess_rooms.length,
-        player_num: chess_players.length,
+        room_num: 2 || chess_rooms.length,
+        player_num: 9 || chess_players.length,
+      },
+      {
+        name: '决战俄罗斯',
+        type: 'tetris',
+        icon: tetris_icon,
+        link: '/roomlist/tetris',
+        room_num: 4,
+        player_num: 7,
       }
     ]
     const child = <div>

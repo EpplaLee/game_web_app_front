@@ -1,0 +1,101 @@
+table {
+  height: 100%;
+  width: 100%;
+}
+.tetris_area {
+  height: 380px;
+  width: 295px;
+  padding: 10px 25px;
+  margin: 0 auto;
+  border: 2px solid #bbded6;
+  border-radius: 12px;
+}
+.tetris_board {
+  width: 240px;
+  height: 360px;
+}
+table, td, th {
+  border: 1px #8080806b solid;
+}
+.shape-i {
+  background: #6DFECD;
+}
+
+.shape-z {
+  background: #FC3768;
+}
+
+.shape-o {
+  background: #00F;
+}
+
+.shape-t {
+  background: #CB6CFC;
+}
+
+.shape-j {
+  background: #136BFB;
+}
+
+.shape-l {
+  background: #FD9827;
+}
+
+.shape-s {
+  background: #6DFD46;
+}
+.opponent_area {
+  display: flex;
+  justify-content: space-between;
+  height: 200px;
+  width: 295px;
+  border: 2px solid #bad7df;
+  border-radius: 12px;
+  padding: 0 25px;
+  margin: 6px auto;
+  align-items: center;
+}
+.opponent_board {
+  width: 120px;
+  height: 180px;
+}
+table, td, th {
+  border: .5px #808080 solid;
+}
+.tetris_player_warpper {
+  justify-content: left;
+}
+.palyer_info {
+  width: 100px;
+  height: 180px;
+}
+.tetris_player_warppar {
+  width: 100px;
+  height: 60px;
+  margin-bottom: 60px;
+  font-size: 12px;
+  border: solid 1px #bbded6;
+  border-radius: 4px;
+  display: flex;
+}
+.tetris_avatar {
+  margin: 12px 10px;
+  margin-left: 6px;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 22px;
+  border-radius: 6px;
+}
+.tetris_player_info_wrapper {
+  margin-top: 14px;
+}
+.tetris_player_name_wrapper {
+  font-size: 12px;
+}
+.tetris_player_name {
+  font-size: 12px;
+}
+.tetris_player_wins {
+  margin-top: 4px;
+}

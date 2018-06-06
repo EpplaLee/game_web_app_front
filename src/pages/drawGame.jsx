@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Tag } from 'antd';
+import { Tag, message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Frame from './components/frame';
 import { api, getQueryString } from '../utils/constants'
 
 import './drawGame.css';
 import './roomPage.css';
+
+
 
 const windowToCanvas = (canvas, x, y) => {
   return {
@@ -36,36 +38,57 @@ class DrawGame extends Component  {
         nickname: this.props.RootStore.User.nickname,
       }))
     }
+    this.track = [];
     this.state = {
-      timeleft: 60,
       player_list: [],
+      is_drawer: false,
+      answer: '',
+      timeleft: 90,
     }
   }
-  componentDidMount() {
-    // 绘图部分
-    let { timeleft } = this.state;
-    setInterval( () => {
-      if(timeleft > 0) {
-        timeleft = timeleft - 1;
-        this.setState({ timeleft: timeleft });
-      }
-    }, 1000)
 
+  componentDidMount() {
+    //定义节流函数
+    const throttle = function(method, context) {
+      clearTimeout(method.tId);
+      method.tId = setTimeout(function(){
+        method.call(context);
+      }, 200)
+    }
+    const send_track = () => {
+      this.draw_ws.send(JSON.stringify({
+        action: 1,
+        track: this.track,
+      }))
+      this.track = [];
+    }
+    const send_answer = () => {
+      this.draw_ws.send(JSON.stringify({
+        action: 2,
+        answer: this.state.answer,
+      }))
+    }
+    // 绘图部分
     const canvas_ele = this.refs.draw_canvas;
     const context = canvas_ele.getContext('2d');
     let isDrawing = false;
     //鼠标绘图捕捉
     canvas_ele.onmousedown = e => {
-      isDrawing = true;
+      if(this.state.is_drawer) {
+        isDrawing = true;
+      }
       let ele = windowToCanvas(canvas_ele, e.clientX, e.clientY);
       let { x, y } = ele;
-      context.moveTo(x, y);
+      this.track.push([x,y]);
+      //context.moveTo(x, y);
       canvas_ele.onmousemove = e => {
         if(isDrawing) {
           let ele = windowToCanvas(canvas_ele, e.clientX, e.clientY);
           let { x, y } = ele;
-          context.lineTo(x,y);
-          context.stroke();
+          this.track.push([x,y]);
+          throttle(send_track);
+          // context.lineTo(x,y);
+          // context.stroke();
         }
       }
     }
@@ -78,12 +101,15 @@ class DrawGame extends Component  {
       let touch = e.touches[0];
       let ele = windowToCanvas(canvas_ele, touch.clientX, touch.clientY);
       let { x, y } = ele;
+      this.track.push([x,y]);
       context.moveTo(x, y);
       canvas_ele.addEventListener('touchmove', e => {
         if(isDrawing) {
           let touch = e.touches[0];
           let ele = windowToCanvas(canvas_ele, touch.clientX, touch.clientY);
           let { x, y } = ele;
+          this.track.push([x,y]);
+          throttle(send_track);
           context.lineTo(x,y);
           context.stroke();
         }
@@ -97,14 +123,43 @@ class DrawGame extends Component  {
     this.draw_ws.onmessage = (evt) => {
       let draw_res = JSON.stringify(evt.data);
       if(draw_res.action === 0) {
-
+        //处理游戏开始逻辑
       } else if(draw_res.action === 1) {
+        //处理绘画逻辑,若本人为画手则不处理
+        let start_point = draw_res.track.pop();
+        context.moveTo(start_point[0], start_point[1]);
+        while(draw_res.track.length > 0) {
+          let coordinate = draw_res.track.pop();
+          let [x, y] = coordinate;
+          context.lineTo(x,y);
+          context.stroke();
+        }
+      } else if(draw_res.action === 2) {
+        //处理计时逻辑
+        this.setState({
+          timeleft: draw_res.timeleft,
+        })
+      } else if(draw_res.action === 3) {
+        //处理结果返回
+        if(draw_res.answer_result === true) {
+          message.success('猜对了！')
+        } else {
+          message.error('猜错了！')
+        }
+        this.setState({
+          palyer_list: draw_res.palyer_list,
+        })
+      } else if(draw_res.action === 4) {
+        //处理轮换逻辑
+        
+      } else if(draw_res.action === 5) {
+        //游戏结束
         
       }
     }
   }
   render() {
-    let { timeleft, player_list } = this.state; 
+    let { player_list, timeleft } = this.state; 
     const child =  <div>
       <div className="info_wrapper">
         <span>提示： 水果（三个字）</span>
