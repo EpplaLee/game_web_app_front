@@ -18,31 +18,33 @@ table, td, th {
   border: 1px #8080806b solid;
 }
 .shape-i {
-  background: #6DFECD;
+  background: #A5B869;
 }
-
+.shape-grey {
+  background: #bfbfbfa8;
+}
 .shape-z {
-  background: #FC3768;
+  background: #667D9D;
 }
 
 .shape-o {
-  background: #00F;
+  background:#7EBAAE;
 }
 
 .shape-t {
-  background: #CB6CFC;
+  background: #C0C9A1;
 }
 
 .shape-j {
-  background: #136BFB;
+  background: #7BA45E;
 }
 
 .shape-l {
-  background: #FD9827;
+  background: #90aeff;
 }
 
 .shape-s {
-  background: #6DFD46;
+  background: #ffd3b6;
 }
 .opponent_area {
   display: flex;
