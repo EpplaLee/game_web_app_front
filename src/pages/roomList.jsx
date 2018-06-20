@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
 import './roomList.css';
@@ -43,7 +43,14 @@ class GameList extends Component {
     const child = <div>
       <div className="roomlist_wrapper">
         {Object.keys(room_list).map( (i, n) => {
-          return <div onClick={ () => { enterRoom(history, type, player, i) }} key={n.toString()} to={`/roompage/${type}/${i}`}>
+          return <div onClick={ () => { 
+                if(room_list[i].current_count >= room_list[i].full_count) {
+                  message.info('房间已满')
+                } else {
+                  enterRoom(history, type, player, i);
+                }
+              }} 
+              key={n.toString()} to={`/roompage/${type}/${i}`}>
             <div className="roomlist_item">
               <div className="roomlist_item_id">ID：{i}</div>
               <img src={room_pic} alt="" className="roomlist_icon"/>

@@ -1,4 +1,4 @@
-const api = '192.168.0.2:5000';
+const api = '192.168.0.4:5000';
 
 function getQueryString(key){
   var reg = new RegExp("(^|&)"+key+"=([^&]*)(&|$)");
@@ -9,9 +9,11 @@ function getQueryString(key){
 //getQueryString('arg')
 //getQueryString('test')
 
+
+
 // 决战俄罗斯
 const TETRIS_FRAME = 800;
-const TETRIS_BOARD_WIDTH = 14;
+const TETRIS_BOARD_WIDTH = 12;
 const TETRIS_BOARD_HEIGHT = 18;
 const I = {
   blocks: [

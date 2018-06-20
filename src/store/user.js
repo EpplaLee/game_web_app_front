@@ -3,7 +3,7 @@ import { message } from 'antd'
 import qs from 'qs';
 
 class User {
-  @observable islogin = true;
+  @observable islogin = false;
   @observable nickname = '';
   @observable phone_num = '';
   @observable authority = null;

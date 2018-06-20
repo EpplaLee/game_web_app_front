@@ -1,0 +1,16 @@
+.chat_body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.ant-input-search {
+  margin-bottom: -6px;
+}
+.chat_item {
+  text-align: start;
+  padding: 2px 4px;
+}
+.chat_wrapper :nth-of-type(even) {
+  background: #e6f7ff;
+}

@@ -3,9 +3,32 @@
   height: 300px; */
   border: 1px solid ;
 }
+.color_title {
+  display: inline-block;
+}
 .palette_item {
   display: inline-block;
   width: 20px;
   height: 20px;
   border-radius: 6px;
+  margin-left: 2px;
+}
+.red_palette_item {
+  margin-left: 20px;
+  background: #f5222d;
+}
+.orange_palette_item {
+  background: #f7a605;
+}
+.yellow_palette_item {
+  background: #f5e330;
+}
+.green_palette_item {
+  background: #52c41a;
+}
+.blue_palette_item {
+  background: #40a9ff;
+}
+.black_palette_item {
+  background: #222222;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Modal } from 'antd';
-import { withRouter } from 'react-router-dom'
+import { observer, inject } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import Frame from './components/frame';
 import white_piece from '../public/pawn_white.png';
 import black_piece from '../public/pawn_black.png';
@@ -57,8 +58,9 @@ const drawChess = (context, color, x, y, canvas) => {
   } else {
     context.drawImage(img_black_piece, x * 25 + 22.5 - canvas.offsetLeft, y * 25 + 17.5 - canvas.offsetTop, 25, 25);
   }
-}
-class ChessGame extends Component  {
+};
+@inject('RootStore') @observer
+class ChessGame extends Component {
   constructor(props) {
     super(props);
     this.chess_ws = new WebSocket(`ws://${api}/ws/chess`)
@@ -74,9 +76,11 @@ class ChessGame extends Component  {
       color: null,
       chess_list: null,
       is_playing: false,
+      kkk: this.props.history,
     }
-  }
+  };
   componentDidMount() {
+    const self = this;
     const canvas_ele = this.refs.draw_canvas;
     const context = canvas_ele.getContext('2d');
     drawChessBoard(context);
@@ -89,7 +93,7 @@ class ChessGame extends Component  {
           chess_list: chess_res.chess_list,
         })
       } else if(chess_res.action === 1) {
-        drawChess(context, this.state.color, chess_res.x, chess_res.y, canvas_ele)
+        drawChess(context, chess_res.color, chess_res.x, chess_res.y, canvas_ele)
         this.setState({
           is_playing: chess_res.color === this.state.color,
           chess_list: chess_res.chess_list,
@@ -99,7 +103,7 @@ class ChessGame extends Component  {
         Modal.info({
           title: `${chess_res.color === 1? '白棋' : '黑棋'}获胜`,
           onOk() {
-            this.props.history.push('/')
+            self.props.history.push('/')
           },
         });
       }
@@ -112,32 +116,31 @@ class ChessGame extends Component  {
   }
   render() {
     const { player_list } = this.props.RootStore.Lobby;
-    let { timeleft } = this.state; 
+    let { timeleft, is_playing, color } = this.state; 
     const two_player_table = <div className="player_warpper">
     {player_list.map( (i, n) => <div>
-        {i.player_name?
+        {i.nickname?
           <div className="chess_player_warppar">
-            <div className="default_avatar chess_avatar">{i.player_name.substring(0,1)}</div>
+            <div className="default_avatar chess_avatar">{i.nickname.substring(0,1)}</div>
             <div className="chess_player_info_wrapper">
               <div className="chess_player_name_wrapper">
-                <p className="chess_player_name">{i.player_name}</p>
-                <div className="custom_status_tag">{status_text_map[i.status]}</div>
+                <p className="chess_player_name">{i.nickname}</p>
               </div>
-              <div className="chess_player_wins">胜场: *</div>
-              <div>总场数: *</div>
+              <div className="chess_player_wins">胜场: 0</div>
+              <div>总场数: 0</div>
             </div>
           </div>
           :
           <div className="chess_player_warppar"></div>
         }
         <Row>
-              <Col>执子:</Col>
-              <Col><img src={ n === 0? white_piece : black_piece} alt=""/></Col>
-            </Row>
-            <Row>
-              <Col>局时: 02:30</Col>
-              <Col>步时: 00:08</Col>
-            </Row>
+          <Col>执子:</Col>
+          <Col><img src={ n === 0? white_piece : black_piece} alt=""/></Col>
+        </Row>
+        <Row>
+          <Col>局时: 02:30</Col>
+          <Col>步时: 00:08</Col>
+        </Row>
       </div>)}
     </div>;
     const child =  <div>

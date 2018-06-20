@@ -101,3 +101,40 @@ table, td, th {
 .tetris_player_wins {
   margin-top: 4px;
 }
+.arrow-circle {
+  position: absolute;
+  background: #e6f7ff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px solid #13c2c285;
+}
+.arrow-left{
+  left: 4px;
+  bottom: 100px;
+}
+.arrow-right {
+  right: 4px;
+  bottom: 100px;
+}
+.arrow-up {
+  left: 4px;
+  bottom: 160px;
+}
+.arrow-down {
+  right: 4px;
+  bottom: 160px;
+}
+.arrow-img {
+  width: 40px;
+  height: 40px;
+}
+.arrow-left-img {
+  transform: rotate(180deg);
+}
+.arrow-up-img {
+  transform: rotate(-90deg);
+}
+.arrow-down-img {
+  transform: rotate(90deg);
+}
