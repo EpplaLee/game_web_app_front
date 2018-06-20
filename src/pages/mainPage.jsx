@@ -3,46 +3,62 @@ import React, { Component } from 'react';
 import Frame from './components/frame';
 import { Link } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
+import { toJS } from 'mobx'
 import './mainPage.css';
 
 import pallete_icon from '../public/pallete_icon.png';
 import queen_icon from '../public/queen_icon.png';
-import tetris_icon from '../public/tetris.png'
+import tetris_icon from '../public/tetris.png';
+import refresh_icon from '../public/refresh.png'
 
 @inject('RootStore') @observer
 export default class MainPage extends Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
   render () {
-    const { 
+    let { 
       chess_rooms, 
       draw_rooms,
+      tetris_rooms,
       chess_players,
       draw_players,
+      tetris_players,
       enterLobby,
+      getLobby
     } = this.props.RootStore.Lobby
+    chess_rooms = toJS(chess_rooms);
+    draw_rooms = toJS(draw_rooms);
+    tetris_rooms = toJS(tetris_rooms);
+    chess_players = toJS(chess_players);
+    draw_players = toJS(draw_players);
+    tetris_players = toJS(tetris_players);
     const game_list = [
       {
         name: '你画我猜',
         type: 'draw',
         icon: pallete_icon,
         link: '/roomlist/draw',
-        room_num: 3 || draw_rooms.length,
-        player_num: 8 || draw_players.length,
+        room_num: Object.keys(draw_rooms).length,
+        player_num: Object.keys(draw_players).length,
       },
       {
         name: '五子棋',
         icon: queen_icon,
         type: 'chess',
         link: '/roomlist/chess',
-        room_num: 2 || chess_rooms.length,
-        player_num: 9 || chess_players.length,
+        room_num: Object.keys(chess_rooms).length,
+        player_num: Object.keys(chess_players).length,
       },
       {
         name: '决战俄罗斯',
         type: 'tetris',
         icon: tetris_icon,
         link: '/roomlist/tetris',
-        room_num: 4,
-        player_num: 7,
+        room_num: Object.keys(tetris_rooms).length,
+        player_num: Object.keys(tetris_players).length,
       }
     ]
     const child = <div>
@@ -62,6 +78,9 @@ export default class MainPage extends Component{
           </div>
         </Link>
       })}
+      <div onClick={ () => { getLobby() }} className="refresh_button">
+        <img  className="refresh_img"  src={refresh_icon} alt=""/>
+      </div>
     </div>
     return (
       <Frame child={child} header_title='游戏大厅'/>

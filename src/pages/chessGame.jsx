@@ -77,6 +77,7 @@ class ChessGame extends Component {
       chess_list: null,
       is_playing: false,
       kkk: this.props.history,
+      timeleft: 60,
     }
   };
   componentDidMount() {
@@ -136,10 +137,6 @@ class ChessGame extends Component {
         <Row>
           <Col>执子:</Col>
           <Col><img src={ n === 0? white_piece : black_piece} alt=""/></Col>
-        </Row>
-        <Row>
-          <Col>局时: 02:30</Col>
-          <Col>步时: 00:08</Col>
         </Row>
       </div>)}
     </div>;

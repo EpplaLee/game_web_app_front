@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tag, message } from 'antd';
+import { Tag, message, Input } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Frame from './components/frame';
 import { observer, inject } from 'mobx-react';
@@ -8,7 +8,7 @@ import { api, getQueryString } from '../utils/constants'
 import './drawGame.css';
 import './roomPage.css';
 
-
+const Search = Input.Search;
 
 const windowToCanvas = (canvas, x, y) => {
   return {
@@ -51,8 +51,9 @@ class DrawGame extends Component  {
     }
     this.track = [];
     this.state = {
+      input_str: '',
       player_list: [],
-      is_drawer: true,
+      is_drawer: false,
       answer: '',
       timeleft: 90,
       color: '#222222'
@@ -60,6 +61,13 @@ class DrawGame extends Component  {
   }
 
   componentDidMount() {
+    setInterval( () => {
+      if(this.state.timeleft > 0) {
+        this.setState({
+          timeleft: this.state.timeleft - 1,
+        })
+      }
+    }, 1000)
     //定义节流函数
     const throttle = function(method, context) {
       clearTimeout(method.tId);
@@ -143,6 +151,9 @@ class DrawGame extends Component  {
     this.draw_ws.onmessage = (evt) => {
       let draw_res = JSON.parse(evt.data);
       if(draw_res.action === 0) {
+        this.setState({
+          is_drawer: true,
+        })
         //处理游戏开始逻辑
       } else if(draw_res.action === 1) {
         //处理绘画逻辑,若本人为画手则不处理
@@ -181,10 +192,11 @@ class DrawGame extends Component  {
     }
   }
   render() {
-    let { player_list, timeleft, color } = this.state; 
+    let { timeleft, color, input_str, is_drawer } = this.state;
+    let { player_list } = this.props.RootStore.Lobby;
     const child =  <div>
       <div className="info_wrapper">
-        <span>提示： 水果（三个字）</span>
+        {is_drawer? <span>答案： 苹果</span> : <span>提示： 水果（2个字）</span>}
         <span>剩余时间: {timeleft}s</span>
       </div>
       <canvas className="draw_canvas" ref="draw_canvas" width='372' height='300'></canvas>
@@ -202,13 +214,35 @@ class DrawGame extends Component  {
         })
         }
       </div>
+      {is_drawer? null
+      :
+      <div>
+        <Search 
+          placeholder="请输入答案" 
+          enterButton="发送" 
+          size="default"
+          value={input_str}
+          onChange = { (evt) => {
+            this.setState({
+              input_str: evt.target.value,
+            })
+          }}
+          onSearch = { () => {
+            this.setState({
+              input_str: '',
+            })
+            message.info('回答错误')
+          }}
+        />
+      </div>
+      }
       <div className="player_warpper">
       {player_list.map( (i, n) => <div>
         {i.nickname?
           <div className="draw_player_warppar">
             <div className="default_avatar">{i.nickname.substring(0,1)}</div>
             <p>{i.nickname}</p>
-            <Tag className="status_tag" color={status_color_map[i.status]}>{status_text_map[i.status]}</Tag>
+            <p>积分: 0</p>
           </div>
           :
           <div className="draw_player_warppar"></div>

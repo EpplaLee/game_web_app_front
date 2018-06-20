@@ -3,14 +3,29 @@ import { Button, message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
 import './roomList.css';
+import './mainPage.css';
 import Frame from './components/frame';
 import two_player from '../public/two_player.png';
 import five_player from '../public/five_player.png';
+import refresh_icon from '../public/refresh.png'
 
 @inject('RootStore') @observer
 class GameList extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      //room_list,
+      player: {
+        nickname: this.props.RootStore.User.nickname,
+        phone_num: this.props.RootStore.User.phone_num,
+      },
+      //title,
+      //room_pic,
+    }
+  };
+  render () {
+    const { type, history } = this.props;
     let room_list, title, room_pic;
     if(this.props.type === 'draw') {
       room_list = this.props.RootStore.Lobby.draw_rooms;
@@ -25,21 +40,9 @@ class GameList extends Component {
       title = '决战俄罗斯';
       room_pic = two_player;
     }
-    this.state = {
-      room_list,
-      player: {
-        nickname: this.props.RootStore.User.nickname,
-        phone_num: this.props.RootStore.User.phone_num,
-      },
-      title,
-      room_pic,
-    }
-  };
-  render () {
-    const { type, history } = this.props;
-    const { player, room_list, title, room_pic } = this.state
-    console.log( player, this.props.RootStore.User.nickname)
-    const { createRoom, enterRoom  } = this.props.RootStore.Lobby;
+    const { player } = this.state
+    const { createRoom, enterRoom, enterLobby  } = this.props.RootStore.Lobby;
+    console.log()
     const child = <div>
       <div className="roomlist_wrapper">
         {Object.keys(room_list).map( (i, n) => {
@@ -62,6 +65,9 @@ class GameList extends Component {
         }
       </div>
       <Button onClick={ () => { createRoom(history, type, player) }} className="createroom_btn" type="primary">创建房间</Button>
+      <div onClick={ () => { enterLobby(type) }} className="refresh_button">
+        <img  className="refresh_img"  src={refresh_icon} alt=""/>
+      </div>
     </div>
     return (
       <Frame header_title={title}

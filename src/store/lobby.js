@@ -6,9 +6,9 @@ class Lobby {
   @observable chess_rooms = {};
   @observable draw_rooms = {};
   @observable tetris_rooms = {};
-  @observable chess_players = [];
-  @observable draw_players = [];
-  @observable tetris_players = [];
+  @observable chess_players = {};
+  @observable draw_players = {};
+  @observable tetris_players = {};
   @observable player_list = [];
 
   constructor(root_store) {
@@ -28,9 +28,30 @@ class Lobby {
       this.draw_rooms = draw_rooms || {};
       this.tetris_rooms = tetris_rooms || {};
 
-      this.chess_players = chess_players || [];
-      this.draw_players = draw_players || [];
-      this.tetris_players = tetris_players || [];
+      this.chess_players = chess_players || {};
+      this.draw_players = draw_players || {};
+      this.tetris_players = tetris_players || {};
+    })
+  }
+  @action getLobby = () => {
+    this.root_store.axios({
+      method: 'get',
+      url: '/lobby',
+      withCredentials: false,
+    }).then( res => {
+      // if(res.data.msg === '查询成功') {
+      //   this.root_store.User.islogin = true;
+      //   this.root_store.User.nickname = '';
+      //   this.root_store.User.phone_num = '';
+      // }
+      const { chess_rooms, draw_rooms, tetris_rooms, chess_players, draw_players, tetris_players} = res.data
+      this.chess_rooms = chess_rooms || {};
+      this.draw_rooms = draw_rooms || {};
+      this.tetris_rooms = tetris_rooms || {};
+
+      this.chess_players = chess_players || {};
+      this.draw_players = draw_players || {};
+      this.tetris_players = tetris_players || {};
     })
   }
   @action enterLobby = (type) => {

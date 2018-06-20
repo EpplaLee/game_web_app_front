@@ -34,3 +34,18 @@
 .gameitem_info > span {
   margin-right: 8px;
 }
+.refresh_button {
+  position: absolute;
+  right: 8px;
+  bottom: 85px;
+  width: 70px;
+  height: 70px;
+  background: #e6f7ff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.refresh_img {
+  margin-top: 5px;
+  width: 60px;
+  height: 60px;
+}
